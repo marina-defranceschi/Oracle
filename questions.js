@@ -17,6 +17,7 @@ const QUESTIONS = [
   "ask someone to switch seats on the plane",
   "tell a friend their outfit is not a good match",
   "compliment a stranger's outfit or look",
+  "say \"we're almost there\" on a walk, when you know we're not", 
   "ask a stranger for a photo, then ask for a retake",
   "join a stranger's conversation because you overheard something interesting",
   "run after a stranger who dropped something"
