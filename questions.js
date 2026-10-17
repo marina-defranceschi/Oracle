@@ -23,6 +23,7 @@ const QUESTIONS = [
   "ask someone to switch seats on the plane",
   "tell a friend their outfit is not a good match",
   "compliment a stranger's outfit or look",
+  "lie in an argument just for the sake of winning it", 
   "never giving back a piece that you lent", 
   "say \"we're almost there\" on a walk, when you know we're not", 
   "ask a stranger for a photo, then ask for a retake",
