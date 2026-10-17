@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Oracle</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Oracle">
+<meta name="theme-color" content="#1d1250">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap">
+<style>
+:root{
+  --gold:#e3bd6a; --gold-soft:#f0d9a0; --cream:#f6ecd6; --muted:#c3b4e6;
+  --ink:#140b3a; --panel:rgba(22,11,58,.66); --panel-line:rgba(227,189,106,.45);
+  --purple:#7a4bd8; --good:#8be0a8; --bad:#ff8fa3;
+  --display:"Cinzel", "Times New Roman", serif;
+  --body:"Cormorant Garamond", Georgia, serif;
+  --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#12093a}
+html,body{margin:0;min-height:100%;color:var(--cream);font:500 19px/1.35 var(--body);-webkit-text-size-adjust:100%;touch-action:manipulation}
+/* Fixed artwork background (a pseudo-element, because fixed backgrounds are buggy on iPhone) */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;
+  background:
+    linear-gradient(rgba(74,28,130,.42), rgba(26,10,70,.50)),
+    url("./background.jpg") left bottom / cover no-repeat,
+    #1d1250;
+}
+button,input{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--display);font-weight:700;margin:0;letter-spacing:.04em}
+
+.screen{display:none;flex-direction:column;gap:16px;min-height:100dvh;max-width:480px;margin:0 auto;
+  padding:calc(var(--safe-t) + 26px) 18px calc(var(--safe-b) + 26px)}
+.screen.on{display:flex;animation:fade .45s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.panel{background:var(--panel);border:1px solid var(--panel-line);border-radius:20px;padding:18px 18px;
+  -webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);box-shadow:0 8px 30px rgba(8,3,30,.45)}
+.center{text-align:center}
+.eyebrow{font:600 12px var(--display);letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.star{color:var(--gold)}
+.sub{color:var(--muted);font-style:italic;margin:0}
+
+/* ---------- buttons ---------- */
+.btn{border:0;border-radius:999px;padding:15px 22px;font:700 15px var(--display);letter-spacing:.12em;text-transform:uppercase;
+  background:linear-gradient(180deg,#f2d58f,#d0a24a);color:#2a1650;box-shadow:0 6px 20px rgba(0,0,0,.35);cursor:pointer;width:100%}
+.btn:active{transform:translateY(1px) scale(.99)}
+.btn:disabled{opacity:.45}
+.btn.ghost{background:rgba(255,255,255,.08);color:var(--gold-soft);border:1px solid var(--panel-line);box-shadow:none}
+.spacer{flex:1}
+
+/* ---------- start ---------- */
+.logo{font:700 clamp(46px,17vw,72px)/1 var(--display);letter-spacing:.12em;text-align:center;margin:6px 0 0;
+  background:linear-gradient(180deg,#fff0c4,#d9a748);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 3px 12px rgba(0,0,0,.5))}
+.tag{text-align:center;color:var(--gold-soft);font-style:italic;margin:0 0 4px}
+.names{display:grid;gap:10px;margin:12px 0}
+.nrow{display:flex;gap:8px}
+.nrow input{flex:1;min-width:0;font-size:18px;padding:12px 14px;border-radius:14px;border:1px solid var(--panel-line);
+  background:rgba(255,255,255,.09);color:var(--cream);outline:none}
+.nrow input::placeholder{color:rgba(246,236,214,.45)}
+.nrow input:focus{border-color:var(--gold);background:rgba(255,255,255,.14)}
+.x{flex:none;width:46px;border-radius:14px;border:1px solid var(--panel-line);background:transparent;color:var(--muted);font-size:20px;cursor:pointer}
+.err{color:var(--bad);min-height:1.2em;margin:0 0 8px;text-align:center}
+
+/* ---------- pass / turn ---------- */
+.turnname{font:700 clamp(32px,10vw,46px)/1.1 var(--display);margin:8px 0 10px;color:var(--gold-soft);word-break:break-word}
+.qline{font:600 13px var(--display);letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.question{font:600 clamp(24px,7vw,30px)/1.2 var(--body);margin:0;color:var(--cream)}
+
+/* ---------- ruler ---------- */
+.bignum{font:700 96px/1 var(--display);text-align:center;color:var(--gold-soft);text-shadow:0 0 28px rgba(227,189,106,.55);margin:6px 0 2px;font-variant-numeric:tabular-nums}
+.ruler{position:relative;padding:8px 6px 0}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:44px;background:transparent;margin:0;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:99px;background:linear-gradient(90deg,#6b3fd0,#e3bd6a)}
+input[type=range]::-moz-range-track{height:8px;border-radius:99px;background:linear-gradient(90deg,#6b3fd0,#e3bd6a)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px;margin-top:-13px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff6d6,#e3bd6a 60%,#b98a2f);border:2px solid #fff3cf;box-shadow:0 3px 12px rgba(0,0,0,.5)}
+input[type=range]::-moz-range-thumb{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6d6,#e3bd6a 60%,#b98a2f);border:2px solid #fff3cf;box-shadow:0 3px 12px rgba(0,0,0,.5)}
+.ticks{display:flex;justify-content:space-between;padding:0 11px;margin-top:-2px;font:600 13px var(--display);color:var(--muted);font-variant-numeric:tabular-nums}
+.ends{display:flex;justify-content:space-between;margin-top:10px;font-style:italic;color:var(--muted);font-size:17px}
+
+/* ---------- oracle phase: the cat picture becomes the whole background ---------- */
+body.oracle::before{
+  background:
+    linear-gradient(rgba(16,6,36,.10), rgba(16,6,36,.30)),
+    url("./oracle-bg.jpg") center top / cover no-repeat,
+    #0d0b12;
+}
+/* oracle palette: greyish black from the hat and sweater, red from the lipstick */
+body.oracle{
+  --panel:rgba(19,20,21,.76); --panel-line:rgba(192,76,50,.55);
+  --gold:#e2704c; --gold-soft:#f4e4d4; --muted:#b4b1ab;
+}
+body.oracle .hint{background:rgba(19,20,21,.72);padding:7px 12px;border-radius:12px}
+body.oracle .oitem, body.oracle .rrow{background:rgba(19,20,21,.80)}
+body.oracle .oitem.flash{animation-name:flashO}
+@keyframes flashO{from{background:rgba(192,76,50,.5)}to{background:rgba(19,20,21,.80)}}
+body.oracle .arr{background:rgba(255,255,255,.07);color:var(--gold-soft)}
+body.oracle .btn{background:linear-gradient(180deg,#d4603f,#a43a24);color:#fff3e6}
+body.oracle .val{background:radial-gradient(circle at 35% 30%,#f08a68,#c24b2e 62%,#8f301c);color:#fff3e6}
+body.oracle .board li{border-bottom-color:rgba(192,76,50,.35)}
+body.oracle .points{color:var(--gold-soft)}
+body.oracle .oracle-title{margin:2px 0 10px}
+/* ---------- oracle intro ---------- */
+.catwrap{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--panel-line);box-shadow:0 10px 36px rgba(0,0,0,.5)}
+.catwrap img{display:block;width:100%;aspect-ratio:1/1.02;object-fit:cover;object-position:50% 20%}
+.catwrap::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(18,7,50,.85))}
+.catcap{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:0 16px 16px;text-align:center}
+.catcap .eyebrow{display:block;margin-bottom:4px}
+.oracle-title{font:700 clamp(26px,8vw,34px)/1.15 var(--display);color:#fff3cf;text-shadow:0 2px 14px rgba(0,0,0,.7);word-break:break-word}
+
+/* ---------- ordering ---------- */
+.hint{display:flex;justify-content:space-between;font:600 12px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:0 4px}
+.olist{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.oitem{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:10px;padding:10px 10px 10px 14px;border-radius:16px;
+  background:rgba(22,11,58,.72);border:1px solid var(--panel-line);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px)}
+.oitem .n{font:700 20px var(--display);color:var(--gold);text-align:center}
+.oitem .nm{font:600 22px var(--body);word-break:break-word}
+.arrows{display:flex;gap:6px}
+.arr{width:44px;height:44px;border-radius:12px;border:1px solid var(--panel-line);background:rgba(255,255,255,.08);color:var(--gold-soft);font-size:20px;cursor:pointer}
+.arr:disabled{opacity:.25}
+.arr:active{background:rgba(255,255,255,.2)}
+.flash{animation:flash .35s ease}
+@keyframes flash{from{background:rgba(227,189,106,.4)}to{background:rgba(22,11,58,.72)}}
+
+/* ---------- reveal ---------- */
+.rrow{display:grid;grid-template-columns:34px 1fr auto 28px;align-items:center;gap:10px;padding:11px 12px 11px 14px;border-radius:16px;
+  background:rgba(22,11,58,.78);border:1px solid var(--panel-line);opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s}
+.rrow.in{opacity:1;transform:none}
+.rrow .pos{font:700 18px var(--display);color:var(--gold);text-align:center}
+.rrow b{display:block;font:600 22px/1.1 var(--body);word-break:break-word}
+.rrow small{color:var(--muted);font-size:16px;font-style:italic}
+.val{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:700 20px var(--display);color:#2a1650;
+  background:radial-gradient(circle at 35% 30%,#fff6d6,#e3bd6a 65%,#b98a2f);font-variant-numeric:tabular-nums}
+.mark{font-size:22px;text-align:center}
+.mark.ok{color:var(--good)} .mark.no{color:var(--bad)}
+.after{display:none;gap:14px;flex-direction:column}
+.after.in{display:flex;animation:fade .6s ease both}
+.points{font:700 22px/1.25 var(--display);text-align:center;color:var(--gold-soft)}
+.board{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
+.board li{display:flex;justify-content:space-between;font:600 21px var(--body);padding:2px 4px;border-bottom:1px dashed rgba(227,189,106,.25)}
+.board li span:last-child{font:700 18px var(--display);color:var(--gold)}
+.linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:16px;cursor:pointer;padding:6px;align-self:center}
+@media (prefers-reduced-motion:reduce){.screen.on,.after.in{animation:none}.rrow{transition:none}}
+</style>
+</head>
+<body>
+
+<!-- 1. WHO IS PLAYING -->
+<section class="screen" id="s-start" aria-label="Start">
+  <div>
+    <h1 class="logo">ORACLE</h1>
+    <p class="tag"><span class="star">✦</span> who knows you best? <span class="star">✦</span></p>
+  </div>
+  <div class="panel">
+    <div class="eyebrow center">Who is playing?</div>
+    <div class="names" id="names"></div>
+    <button class="btn ghost" id="addPlayer" type="button">+ Add player</button>
+  </div>
+  <p class="err" id="err"></p>
+  <div class="spacer"></div>
+  <button class="btn" id="startBtn" type="button">Begin the ritual</button>
+</section>
+
+<!-- 2. PASS THE PHONE -->
+<section class="screen" id="s-pass" aria-label="Pass the phone">
+  <div class="panel center">
+    <div class="eyebrow" id="roundTag"></div>
+    <div class="turnname" id="turnName"></div>
+    <p class="sub" id="turnSub">Pass the phone and keep your number secret ✦</p>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn" id="readyBtn" type="button"></button>
+</section>
+
+<!-- 3. THE RULER -->
+<section class="screen" id="s-rate" aria-label="Your number">
+  <div class="panel">
+    <div class="qline">How likely are you to…</div>
+    <p class="question" id="rateQ"></p>
+  </div>
+  <div class="panel">
+    <div class="eyebrow center" id="ratingFor"></div>
+    <div class="bignum" id="bignum">5</div>
+    <div class="ruler">
+      <input type="range" id="slider" min="0" max="10" step="1" value="5" aria-label="Likelihood from 0 to 10">
+      <div class="ticks" aria-hidden="true"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+      <div class="ends"><span>never</span><span>absolutely</span></div>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn" id="lockBtn" type="button">Lock it in</button>
+</section>
+
+<!-- 4. YOU ARE THE ORACLE (cat picture) -->
+<section class="screen" id="s-oracle" aria-label="The oracle">
+  <div class="spacer"></div>
+  <div class="panel center">
+    <span class="eyebrow">The cards are in</span>
+    <div class="oracle-title" id="oracleTitle"></div>
+    <div class="turnname" style="font-size:clamp(22px,6.5vw,28px);margin:0 0 6px">Guess the right sequence</div>
+    <p class="sub" id="oracleSub"></p>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn" id="visionBtn" type="button">Enter the vision</button>
+</section>
+
+<!-- 5. PUT THEM IN ORDER -->
+<section class="screen" id="s-order" aria-label="Put in order">
+  <div class="panel">
+    <div class="qline">How likely are you to…</div>
+    <p class="question" id="orderQ"></p>
+  </div>
+  <div class="hint"><span>↑ least likely</span><span>most likely ↓</span></div>
+  <ul class="olist" id="olist"></ul>
+  <div class="spacer"></div>
+  <button class="btn" id="revealBtn" type="button">Reveal the truth</button>
+</section>
+
+<!-- 6. REVEAL -->
+<section class="screen" id="s-reveal" aria-label="The truth">
+  <div class="panel">
+    <div class="qline">How likely are you to…</div>
+    <p class="question" id="revealQ"></p>
+  </div>
+  <div class="hint"><span>↑ least likely</span><span>most likely ↓</span></div>
+  <div class="olist" id="rlist"></div>
+  <div class="after" id="after">
+    <div class="panel">
+      <div class="points" id="points"></div>
+      <ul class="board" id="board"></ul>
+    </div>
+    <button class="btn" id="nextBtn" type="button">Next round</button>
+    <button class="linkbtn" id="endBtn" type="button">End game</button>
+  </div>
+</section>
+
+<!-- 7. FINAL RESULT -->
+<section class="screen" id="s-final" aria-label="Final result">
+  <div class="panel center">
+    <div class="eyebrow" id="finalTag"></div>
+    <div class="turnname" id="finalWinner"></div>
+    <p class="sub" id="finalSub"></p>
+  </div>
+  <div class="panel"><ul class="board" id="finalBoard"></ul></div>
+  <div class="spacer"></div>
+  <button class="btn" id="againBtn" type="button">Play again</button>
+  <button class="linkbtn" id="newBtn" type="button">New players</button>
+</section>
+
+<script src="questions.js"></script>
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const MAX_PLAYERS = 8, MIN_PLAYERS = 3;
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+  const el = (tag, cls, text) => { const e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; };
+
+  /* ---------- state ---------- */
+  let players = [], scores = {}, round = 0, deck = [], question = '';
+  let oracle = '', raters = [], turn = 0, ratings = {}, guess = [];
+
+  function show(id){
+    document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id));
+    // the oracle's whole turn (intro, ordering, reveal) sits on the cat picture
+    document.body.classList.toggle('oracle', ['s-oracle', 's-order', 's-reveal'].includes(id));
+    window.scrollTo(0, 0);
+  }
+  const store = {
+    get(){ try { return JSON.parse(localStorage.getItem('oracle-players')) || []; } catch(e){ return []; } },
+    set(v){ try { localStorage.setItem('oracle-players', JSON.stringify(v)); } catch(e){} }
+  };
+
+  /* ---------- 1. names ---------- */
+  const namesEl = $('#names');
+  function addNameRow(value){
+    if (namesEl.children.length >= MAX_PLAYERS) return;
+    const row = el('div','nrow');
+    const inp = el('input'); inp.type='text'; inp.placeholder='Name'; inp.maxLength=20; inp.autocomplete='off'; inp.value = value || '';
+    inp.setAttribute('enterkeyhint','next');
+    const x = el('button','x','×'); x.type='button'; x.setAttribute('aria-label','Remove player');
+    x.onclick = () => { if (namesEl.children.length > MIN_PLAYERS) { row.remove(); sync(); } };
+    inp.onkeydown = e => { if (e.key==='Enter'){ e.preventDefault(); const next = row.nextElementSibling; (next ? next.querySelector('input') : $('#startBtn')).focus(); } };
+    row.append(inp, x); namesEl.appendChild(row); sync();
+  }
+  function sync(){
+    $('#addPlayer').style.display = namesEl.children.length >= MAX_PLAYERS ? 'none' : '';
+    [...namesEl.children].forEach(r => r.querySelector('.x').style.visibility = namesEl.children.length > MIN_PLAYERS ? 'visible' : 'hidden');
+  }
+  $('#addPlayer').onclick = () => { addNameRow(''); namesEl.lastElementChild.querySelector('input').focus(); };
+
+  function resetNames(list){
+    namesEl.innerHTML = '';
+    const base = list && list.length >= MIN_PLAYERS ? list : ['', '', ''];
+    base.forEach(n => addNameRow(n));
+  }
+
+  $('#startBtn').onclick = () => {
+    const names = [...namesEl.querySelectorAll('input')].map(i => i.value.trim()).filter(Boolean);
+    const err = $('#err');
+    if (names.length < MIN_PLAYERS) { err.textContent = 'You need at least ' + MIN_PLAYERS + ' players.'; return; }
+    if (new Set(names.map(n => n.toLowerCase())).size !== names.length) { err.textContent = 'Every name must be different.'; return; }
+    err.textContent = '';
+    players = names; scores = {}; names.forEach(n => scores[n] = 0);
+    store.set(players);
+    round = 0; deck = [];
+    newRound();
+  };
+
+  /* ---------- round setup ---------- */
+  function nextQuestion(){
+    if (!deck.length) deck = shuffle(QUESTIONS.map((_, i) => i)).map(i => QUESTIONS[i]);
+    return deck.pop();
+  }
+  function newRound(){
+    question = nextQuestion();
+    // the oracle is the last player in the first round, then it moves on every round
+    oracle = players[(players.length - 1 + round) % players.length];
+    raters = players.filter(p => p !== oracle);
+    ratings = {}; turn = 0;
+    showPass();
+  }
+
+  /* ---------- 2. pass the phone ---------- */
+  function showPass(){
+    const name = raters[turn];
+    $('#roundTag').textContent = 'Round ' + (round + 1) + '/' + QUESTIONS.length + ' · ' + (turn + 1) + ' of ' + raters.length;
+    $('#turnName').textContent = "It's " + name + "'s turn";
+    $('#readyBtn').textContent = "I'm " + name;
+    show('s-pass');
+  }
+  $('#readyBtn').onclick = () => {
+    const name = raters[turn];
+    $('#rateQ').textContent = question;
+    $('#ratingFor').textContent = name + ', your number';
+    $('#slider').value = 5; $('#bignum').textContent = '5';
+    show('s-rate');
+  };
+
+  /* ---------- 3. ruler ---------- */
+  $('#slider').oninput = e => { $('#bignum').textContent = e.target.value; };
+  $('#lockBtn').onclick = () => {
+    ratings[raters[turn]] = Number($('#slider').value);
+    turn++;
+    if (turn < raters.length) showPass(); else showOracle();
+  };
+
+  /* ---------- 4. oracle intro ---------- */
+  function showOracle(){
+    $('#oracleTitle').textContent = oracle + ', you are the oracle!';
+    $('#oracleSub').textContent = 'Put ' + raters.length + ' players in order, from least to most likely.';
+    show('s-oracle');
+  }
+  $('#visionBtn').onclick = () => {
+    guess = shuffle(raters);
+    $('#orderQ').textContent = question;
+    renderOrder();
+    show('s-order');
+  };
+
+  /* ---------- 5. order ---------- */
+  function renderOrder(flashIdx){
+    const ul = $('#olist'); ul.innerHTML = '';
+    guess.forEach((name, i) => {
+      const li = el('li','oitem' + (i === flashIdx ? ' flash' : ''));
+      const up = el('button','arr','▲'); up.type='button'; up.disabled = i === 0; up.setAttribute('aria-label','Move ' + name + ' up');
+      const dn = el('button','arr','▼'); dn.type='button'; dn.disabled = i === guess.length - 1; dn.setAttribute('aria-label','Move ' + name + ' down');
+      up.onclick = () => move(i, -1); dn.onclick = () => move(i, 1);
+      const arrows = el('div','arrows'); arrows.append(up, dn);
+      li.append(el('div','n', String(i + 1)), el('div','nm', name), arrows);
+      ul.appendChild(li);
+    });
+  }
+  function move(i, d){
+    const j = i + d; if (j < 0 || j >= guess.length) return;
+    [guess[i], guess[j]] = [guess[j], guess[i]];
+    renderOrder(j);
+  }
+  $('#revealBtn').onclick = reveal;
+
+  /* ---------- 6. reveal ---------- */
+  async function reveal(){
+    $('#revealQ').textContent = question;
+    const rl = $('#rlist'); rl.innerHTML = '';
+    $('#after').classList.remove('in');
+    // true order: ascending by number; ties are in any order and count as correct
+    const truth = raters.slice().sort((a, b) => ratings[a] - ratings[b]);
+    let correct = 0;
+    const rows = truth.map((name, i) => {
+      const guessed = guess[i];
+      const ok = ratings[guessed] === ratings[name];   // tie-tolerant
+      if (ok) correct++;
+      const row = el('div','rrow');
+      const mid = el('div'); mid.append(el('b', null, name), el('small', null, oracle + ' said ' + guessed));
+      row.append(el('div','pos', String(i + 1)), mid, el('div','val', String(ratings[name])), el('div','mark ' + (ok ? 'ok' : 'no'), ok ? '✓' : '✗'));
+      rl.appendChild(row);
+      return row;
+    });
+    const perfect = correct === raters.length;
+    const pts = correct + (perfect ? 2 : 0);
+    scores[oracle] += pts;
+
+    $('#points').textContent = perfect
+      ? 'A perfect vision! ' + oracle + ' scores ' + pts + ' points (' + correct + ' + 2 bonus)'
+      : oracle + ' scores ' + pts + (pts === 1 ? ' point' : ' points');
+    const board = $('#board'); board.innerHTML = '';
+    players.slice().sort((a, b) => scores[b] - scores[a]).forEach(p => {
+      const li = el('li'); li.append(el('span', null, p), el('span', null, String(scores[p]))); board.appendChild(li);
+    });
+    const last = round + 1 >= QUESTIONS.length;
+    $('#nextBtn').textContent = last ? 'See the final result' : 'Next round';
+    $('#nextBtn').onclick = () => { round++; if (round >= QUESTIONS.length) showFinal(); else newRound(); };
+    show('s-reveal');
+    await wait(500);
+    for (const r of rows){ r.classList.add('in'); await wait(850); }
+    $('#after').classList.add('in');
+    $('#after').scrollIntoView({behavior:'smooth', block:'end'});
+  }
+  function showFinal(){
+    const sorted = players.slice().sort((a, b) => scores[b] - scores[a]);
+    const top = scores[sorted[0]];
+    const winners = sorted.filter(p => scores[p] === top);
+    $('#finalTag').textContent = 'All ' + QUESTIONS.length + ' rounds played';
+    $('#finalWinner').textContent = winners.join(' & ');
+    $('#finalSub').textContent = winners.length > 1 ? 'share the crown as sharpest oracles' : 'is the sharpest oracle';
+    const b = $('#finalBoard'); b.innerHTML = '';
+    sorted.forEach(p => { const li = el('li'); li.append(el('span', null, p), el('span', null, String(scores[p]))); b.appendChild(li); });
+    show('s-final');
+  }
+  $('#againBtn').onclick = () => { scores = {}; players.forEach(n => scores[n] = 0); round = 0; deck = []; newRound(); };
+  $('#newBtn').onclick = () => { resetNames(players); show('s-start'); };
+
+  // two-step confirm built into the page (browsers inside apps often block confirm())
+  let endArmed = false;
+  $('#endBtn').onclick = () => {
+    const b = $('#endBtn');
+    if (!endArmed) {
+      endArmed = true; b.textContent = 'Tap again to end the game';
+      setTimeout(() => { endArmed = false; b.textContent = 'End game'; }, 3500);
+      return;
+    }
+    endArmed = false; b.textContent = 'End game';
+    resetNames(players); show('s-start');
+  };
+
+  /* ---------- go ---------- */
+  resetNames(store.get());
+  show('s-start');
+})();
+</script>
+</body>
+</html>
