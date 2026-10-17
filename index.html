@@ -9,6 +9,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Oracle">
 <meta name="theme-color" content="#1d1250">
+<link rel="apple-touch-icon" href="./app-icon.png">
+<link rel="icon" href="./app-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap">
 <style>
@@ -88,8 +90,7 @@ input[type=range]::-moz-range-thumb{width:30px;height:30px;border-radius:50%;bac
 /* ---------- oracle phase: the cat picture becomes the whole background ---------- */
 body.oracle::before{
   background:
-    linear-gradient(rgba(16,6,36,.10), rgba(16,6,36,.30)),
-    url("./oracle-bg.jpg") center top / cover no-repeat,
+    url("./oracle-bg.jpg") center bottom / cover no-repeat,
     #0d0b12;
 }
 /* oracle palette: greyish black from the hat and sweater, red from the lipstick */
@@ -97,6 +98,18 @@ body.oracle{
   --panel:rgba(19,20,21,.76); --panel-line:rgba(192,76,50,.55);
   --gold:#e2704c; --gold-soft:#f4e4d4; --muted:#b4b1ab;
 }
+body.oracle .screen{gap:12px}
+body.oracle .panel{padding:14px 16px}
+body.oracle .question{font-size:clamp(20px,5.8vw,24px)}
+body.oracle .oracle-title{font-size:clamp(24px,7vw,30px)}
+body.oracle .olist{gap:8px}
+body.oracle .oitem{padding:6px 8px 6px 12px;grid-template-columns:28px 1fr auto}
+body.oracle .oitem .nm{font-size:20px}
+body.oracle .arr{width:40px;height:40px}
+body.oracle .rrow{padding:7px 10px 7px 12px;grid-template-columns:28px 1fr auto 26px}
+body.oracle .rrow b{font-size:20px}
+body.oracle .rrow small{font-size:15px}
+body.oracle .val{width:38px;height:38px;font-size:18px}
 body.oracle .hint{background:rgba(19,20,21,.72);padding:7px 12px;border-radius:12px}
 body.oracle .oitem, body.oracle .rrow{background:rgba(19,20,21,.80)}
 body.oracle .oitem.flash{animation-name:flashO}
@@ -200,15 +213,13 @@ body.oracle .oracle-title{margin:2px 0 10px}
 
 <!-- 4. YOU ARE THE ORACLE (cat picture) -->
 <section class="screen" id="s-oracle" aria-label="The oracle">
-  <div class="spacer"></div>
-  <div class="panel center">
+    <div class="panel center">
     <span class="eyebrow">The cards are in</span>
     <div class="oracle-title" id="oracleTitle"></div>
     <div class="turnname" style="font-size:clamp(22px,6.5vw,28px);margin:0 0 6px">Guess the right sequence</div>
     <p class="sub" id="oracleSub"></p>
   </div>
-  <div class="spacer"></div>
-  <button class="btn" id="visionBtn" type="button">Enter the vision</button>
+    <button class="btn" id="visionBtn" type="button">Enter the vision</button>
 </section>
 
 <!-- 5. PUT THEM IN ORDER -->
@@ -219,7 +230,6 @@ body.oracle .oracle-title{margin:2px 0 10px}
   </div>
   <div class="hint"><span>↑ least likely</span><span>most likely ↓</span></div>
   <ul class="olist" id="olist"></ul>
-  <div class="spacer"></div>
   <button class="btn" id="revealBtn" type="button">Reveal the truth</button>
 </section>
 
@@ -270,7 +280,11 @@ body.oracle .oracle-title{margin:2px 0 10px}
   function show(id){
     document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id));
     // the oracle's whole turn (intro, ordering, reveal) sits on the cat picture
-    document.body.classList.toggle('oracle', ['s-oracle', 's-order', 's-reveal'].includes(id));
+    const isO = ['s-oracle', 's-order', 's-reveal'].includes(id);
+    document.body.classList.toggle('oracle', isO);
+    const tc = document.querySelector('meta[name="theme-color"]');
+    if (tc) tc.setAttribute('content', isO ? '#0d0b12' : '#1d1250');
+    document.documentElement.style.background = isO ? '#0d0b12' : '#12093a';
     window.scrollTo(0, 0);
   }
   const store = {
